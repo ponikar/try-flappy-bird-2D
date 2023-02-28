@@ -1,16 +1,11 @@
 import { Canvas } from "@shopify/react-native-skia";
 import { useEffect, useRef, useState } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { GameBackground } from "./src/components/background";
 import { Bird } from "./src/components/bird";
 import { Obstacles } from "./src/components/obstacles";
+import { Pause } from "./src/components/pause-button";
+import { Score } from "./src/components/score";
 
 export default function App() {
   const [y, setY] = useState(0);
@@ -53,6 +48,8 @@ export default function App() {
       <Canvas style={styles.container}>
         <GameBackground />
         <Obstacles />
+        <Score />
+        <Pause />
         <Bird y={y} />
       </Canvas>
     </Pressable>
