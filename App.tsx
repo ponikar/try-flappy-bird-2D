@@ -1,18 +1,67 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Canvas } from "@shopify/react-native-skia";
+import { useEffect, useRef, useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { GameBackground } from "./src/components/background";
+import { Bird } from "./src/components/bird";
+import { Obstacles } from "./src/components/obstacles";
 
 export default function App() {
+  const [y, setY] = useState(0);
+
+  const timer = useRef(null);
+  const timeout = useRef(null);
+
+  useEffect(() => {
+    timer.current = setInterval(() => {
+      keepBirdDown();
+    }, 700);
+    return () => {
+      clearInterval(timer.current);
+      clearTimeout(timeout.current);
+    };
+  }, []);
+
+  const keepBirdDown = () => {
+    setY((y) => y + 40);
+  };
+
+  const handlePress = () => {
+    clearTimeout(timeout.current);
+    clearInterval(timer.current);
+    setY((y) => {
+      if (y > 0) {
+        return y - 40;
+      }
+      return y;
+    });
+
+    timeout.current = setTimeout(() => {
+      timer.current = setInterval(() => {
+        keepBirdDown();
+      }, 700);
+    }, 200);
+  };
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <Pressable style={{ flex: 1 }} onPress={handlePress}>
+      <Canvas style={styles.container}>
+        <GameBackground />
+        <Obstacles />
+        <Bird y={y} />
+      </Canvas>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
   },
 });
