@@ -8,18 +8,13 @@ export const useGameStateEffect = (
   const gameState = useGameState();
   const timeInterval = useRef<NodeJS.Timeout>();
 
-  // initially keep the loop running
   useEffect(() => {
-    timeInterval.current = setInterval(callback, timer);
-    return () => clearInterval(timeInterval.current);
-  }, []);
-
-  useEffect(() => {
-    if (gameState === "paused") {
-      clearInterval(timeInterval.current);
-    } else if (gameState === "resumed") {
+    if (gameState === "running" || gameState === "resumed") {
       timeInterval.current = setInterval(callback, timer);
+    } else if (gameState === "paused") {
+      clearInterval(timeInterval.current);
     }
+    return () => clearInterval(timeInterval.current);
   }, [gameState]);
 
   return timeInterval;

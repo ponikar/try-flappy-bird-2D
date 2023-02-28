@@ -9,9 +9,9 @@ export const Pause = () => {
   const play = useImage(require("../assets/play.png"));
 
   const state = useGameState();
-  if (!pause || !play) return null;
+  if (!pause || !play || state === "ideal") return null;
 
-  if (state === "ideal")
+  if (state === "running")
     return (
       <Image
         image={pause}
@@ -46,6 +46,8 @@ export const PauseButtonArea = () => {
       gameActions.gamePaused();
     }
   };
+
+  if (state === "ideal") return null;
 
   return (
     <Pressable

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { GameBackground } from "./src/components/background";
 import { Bird } from "./src/components/bird";
+import { GetReady, GetReadyClickArea } from "./src/components/get-ready";
 import { Obstacles } from "./src/components/obstacles";
 import { Pause, PauseButtonArea } from "./src/components/pause-button";
 import { Score } from "./src/components/score";
@@ -56,9 +57,11 @@ export default function App() {
           <Score />
           <Pause />
           <Bird y={y} />
+          <GetReady />
         </Canvas>
       </Pressable>
       <PauseButtonArea />
+      <GetReadyClickArea />
     </>
   );
 }
