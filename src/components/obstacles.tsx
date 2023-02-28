@@ -1,13 +1,15 @@
 import { useImage, Image } from "@shopify/react-native-skia";
 import React, { FC } from "react";
 import { Dimensions } from "react-native";
+import { useGameOver } from "../hooks/useGameOver";
 import { useGameStateEffect } from "../hooks/useGameStateEffect";
+import { useGameActions } from "../store/game-state";
 
-const MAX_HEIGHT = 400;
-const MIN_HEIGHT = 300;
+const MAX_HEIGHT = 450;
+const MIN_HEIGHT = 400;
 
-const MAX_WIDTH = 300;
-const MIN_WIDTH = 250;
+const MAX_WIDTH = 75;
+const MIN_WIDTH = 50;
 
 interface Obstacle {
   id: number;
@@ -63,6 +65,13 @@ const Obstacle: FC<{
   const pipeDown = useImage(require("../assets/pipe-green-down.png"));
   const [x, setX] = React.useState(object.x);
 
+  useGameOver({
+    x,
+    y: object.y,
+    width: object.width,
+    height: object.height,
+  });
+
   const isUnMounted = React.useRef(false);
 
   useGameStateEffect(() => {
@@ -90,6 +99,7 @@ const Obstacle: FC<{
       width={object.width}
       height={object.height}
       x={x}
+      fit="fill"
       y={object.y}
     />
   );

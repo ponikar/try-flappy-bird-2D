@@ -1,13 +1,11 @@
 import { Image, useImage } from "@shopify/react-native-skia";
 import React, { FC, useEffect, useRef, useState } from "react";
+import { useBird } from "../store/bird";
 
-interface BirdProps {
-  y: number;
-}
+interface BirdProps {}
 
-const BirdX = 100;
-
-export const Bird: FC<BirdProps> = ({ y = 0 }) => {
+export const Bird: FC<BirdProps> = () => {
+  const { y, width, height, x } = useBird();
   const ideal = useImage(require("../assets/bluebird-midflap.png"));
   const goingdown = useImage(require("../assets/bluebird-downflap.png"));
   const goingup = useImage(require("../assets/bluebird-upflap.png"));
@@ -34,12 +32,12 @@ export const Bird: FC<BirdProps> = ({ y = 0 }) => {
   if (birdState === "goingup") {
     return (
       <Image
-        width={60}
-        height={60}
+        width={width}
+        height={height}
         image={goingup}
         fit="contain"
         y={y}
-        x={BirdX}
+        x={x}
       />
     );
   }
@@ -47,17 +45,24 @@ export const Bird: FC<BirdProps> = ({ y = 0 }) => {
   if (birdState === "goingdown") {
     return (
       <Image
-        width={55}
-        height={55}
+        width={width}
+        height={height}
         image={goingdown}
         fit="contain"
         y={y}
-        x={BirdX}
+        x={x}
       />
     );
   }
 
   return (
-    <Image width={50} height={50} image={ideal} fit="contain" y={y} x={BirdX} />
+    <Image
+      width={width}
+      height={height}
+      image={ideal}
+      fit="contain"
+      y={y}
+      x={x}
+    />
   );
 };

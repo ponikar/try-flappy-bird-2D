@@ -3,25 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { GameBackground } from "./src/components/background";
 import { Bird } from "./src/components/bird";
+import { GameOver } from "./src/components/game-over";
 import { GetReady, GetReadyClickArea } from "./src/components/get-ready";
 import { Obstacles } from "./src/components/obstacles";
 import { Pause, PauseButtonArea } from "./src/components/pause-button";
 import { Score } from "./src/components/score";
 import { useGameStateEffect } from "./src/hooks/useGameStateEffect";
+import { useBird, useBirdActions } from "./src/store/bird";
 import { useGameState } from "./src/store/game-state";
 
 export default function App() {
-  const [y, setY] = useState(0);
+  const { keepFalling, jump } = useBirdActions();
 
   const timeout = useRef(null);
 
   const state = useGameState();
 
-  const keepBirdDown = () => {
-    setY((y) => y + 40);
-  };
-
-  const timer = useGameStateEffect(keepBirdDown, 700);
+  const timer = useGameStateEffect(keepFalling, 700);
 
   useEffect(() => {
     return () => {
@@ -31,20 +29,15 @@ export default function App() {
   }, []);
 
   const handlePress = () => {
-    if (state === "paused") return;
+    if (state === "paused" || state === "game-over") return;
 
     clearTimeout(timeout.current);
     clearInterval(timer.current);
-    setY((y) => {
-      if (y > 0) {
-        return y - 40;
-      }
-      return y;
-    });
+    jump();
 
     timeout.current = setTimeout(() => {
       timer.current = setInterval(() => {
-        keepBirdDown();
+        keepFalling();
       }, 700);
     }, 200);
   };
@@ -56,8 +49,9 @@ export default function App() {
           <Obstacles />
           <Score />
           <Pause />
-          <Bird y={y} />
+          <Bird />
           <GetReady />
+          <GameOver />
         </Canvas>
       </Pressable>
       <PauseButtonArea />
