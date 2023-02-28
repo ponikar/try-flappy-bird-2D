@@ -4,30 +4,34 @@ import { Pressable, StyleSheet } from "react-native";
 import { GameBackground } from "./src/components/background";
 import { Bird } from "./src/components/bird";
 import { Obstacles } from "./src/components/obstacles";
-import { Pause } from "./src/components/pause-button";
+import { Pause, PauseButtonArea } from "./src/components/pause-button";
 import { Score } from "./src/components/score";
+import { useGameStateEffect } from "./src/hooks/useGameStateEffect";
+import { useGameState } from "./src/store/game-state";
 
 export default function App() {
   const [y, setY] = useState(0);
 
-  const timer = useRef(null);
   const timeout = useRef(null);
 
+  const state = useGameState();
+
+  const keepBirdDown = () => {
+    setY((y) => y + 40);
+  };
+
+  const timer = useGameStateEffect(keepBirdDown, 700);
+
   useEffect(() => {
-    timer.current = setInterval(() => {
-      keepBirdDown();
-    }, 700);
     return () => {
       clearInterval(timer.current);
       clearTimeout(timeout.current);
     };
   }, []);
 
-  const keepBirdDown = () => {
-    setY((y) => y + 40);
-  };
-
   const handlePress = () => {
+    if (state === "paused") return;
+
     clearTimeout(timeout.current);
     clearInterval(timer.current);
     setY((y) => {
@@ -44,15 +48,18 @@ export default function App() {
     }, 200);
   };
   return (
-    <Pressable style={{ flex: 1 }} onPress={handlePress}>
-      <Canvas style={styles.container}>
-        <GameBackground />
-        <Obstacles />
-        <Score />
-        <Pause />
-        <Bird y={y} />
-      </Canvas>
-    </Pressable>
+    <>
+      <Pressable style={{ flex: 1 }} onPress={handlePress}>
+        <Canvas style={styles.container}>
+          <GameBackground />
+          <Obstacles />
+          <Score />
+          <Pause />
+          <Bird y={y} />
+        </Canvas>
+      </Pressable>
+      <PauseButtonArea />
+    </>
   );
 }
 

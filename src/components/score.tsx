@@ -1,7 +1,6 @@
-import { Box, Image, SkImage, useImage } from "@shopify/react-native-skia";
-import React, { useEffect } from "react";
+import { Image, SkImage, useImage } from "@shopify/react-native-skia";
+import React from "react";
 import { useGameStateEffect } from "../hooks/useGameStateEffect";
-import { useGameState } from "../store/game-state";
 
 const useDigits = (digit: number) => {
   const images: SkImage[] = [];
@@ -37,12 +36,7 @@ export const Score = () => {
 
   const digitsImage = useDigits(currentScore);
 
-  const timeInterval = React.useRef<any>(0);
-
-  useGameStateEffect(
-    () => setCurrentScore((oldScore) => oldScore + 20),
-    timeInterval.current
-  );
+  useGameStateEffect(() => setCurrentScore((oldScore) => oldScore + 20));
 
   return (
     <>

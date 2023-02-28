@@ -16,7 +16,7 @@ const useGameStore = create<GameState>((set) => ({
     gamePaused: () => set({ state: "paused" }),
     gameResumed: () => {
       set({ state: "resumed" });
-      setTimeout(() => set({ state: "ideal" }), 1000);
+      setTimeout(() => set({ state: "ideal" }), 1);
     },
   },
 }));

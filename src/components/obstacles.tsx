@@ -1,6 +1,7 @@
 import { useImage, Image } from "@shopify/react-native-skia";
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { Dimensions } from "react-native";
+import { useGameStateEffect } from "../hooks/useGameStateEffect";
 
 const MAX_HEIGHT = 400;
 const MIN_HEIGHT = 300;
@@ -23,13 +24,6 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 export const Obstacles = () => {
   const [obstacles, setObstacles] = React.useState<Obstacle[]>([]);
 
-  console.log(obstacles.length);
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      generateObstacles();
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
   const generateObstacles = () => {
     setObstacles((o) => {
       const height = Math.random() * (MAX_HEIGHT - MIN_HEIGHT) + MIN_HEIGHT;
@@ -46,6 +40,7 @@ export const Obstacles = () => {
       ];
     });
   };
+  useGameStateEffect(generateObstacles, 2000);
 
   const onObstacleOut = (id: number) => {
     //setObstacles((o) => o.filter((obstacle) => obstacle.id !== id));
@@ -69,19 +64,20 @@ const Obstacle: FC<{
   const [x, setX] = React.useState(object.x);
 
   const isUnMounted = React.useRef(false);
+
+  useGameStateEffect(() => {
+    if (!isUnMounted.current) {
+      setX((x) => {
+        if (x < -object.width) {
+          onObstacleOut(object.id);
+        }
+        return x - 10;
+      });
+    }
+  }, 100);
+
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isUnMounted.current) {
-        setX((x) => {
-          if (x < -object.width) {
-            onObstacleOut(object.id);
-          }
-          return x - 10;
-        });
-      }
-    }, 100);
     return () => {
-      clearInterval(interval);
       isUnMounted.current = true;
     };
   }, []);
