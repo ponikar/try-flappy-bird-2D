@@ -2,11 +2,12 @@ import { useImage, Image } from "@shopify/react-native-skia";
 import React, { FC } from "react";
 import { Dimensions } from "react-native";
 import { useGameOver } from "../hooks/useGameOver";
+import { useGameOverEffect } from "../hooks/useGameOverEffect";
 import { useGameStateEffect } from "../hooks/useGameStateEffect";
 import { useGameActions } from "../store/game-state";
 
-const MAX_HEIGHT = 450;
-const MIN_HEIGHT = 400;
+const MAX_HEIGHT = 400;
+const MIN_HEIGHT = 300;
 
 const MAX_WIDTH = 75;
 const MIN_WIDTH = 50;
@@ -43,15 +44,12 @@ export const Obstacles = () => {
     });
   };
   useGameStateEffect(generateObstacles, 2000);
-
-  const onObstacleOut = (id: number) => {
-    //setObstacles((o) => o.filter((obstacle) => obstacle.id !== id));
-  };
+  useGameOverEffect(() => setObstacles([]));
 
   return (
     <>
       {obstacles.map((o, index) => (
-        <Obstacle onObstacleOut={onObstacleOut} object={o} key={index} />
+        <Obstacle object={o} key={index} />
       ))}
     </>
   );
@@ -59,8 +57,7 @@ export const Obstacles = () => {
 
 const Obstacle: FC<{
   object: Obstacle;
-  onObstacleOut: (e: number) => void;
-}> = ({ object, onObstacleOut }) => {
+}> = ({ object }) => {
   const pipeUp = useImage(require("../assets/pipe-green.png"));
   const pipeDown = useImage(require("../assets/pipe-green-down.png"));
   const [x, setX] = React.useState(object.x);
@@ -76,12 +73,7 @@ const Obstacle: FC<{
 
   useGameStateEffect(() => {
     if (!isUnMounted.current) {
-      setX((x) => {
-        if (x < -object.width) {
-          onObstacleOut(object.id);
-        }
-        return x - 10;
-      });
+      setX((x) => x - 10);
     }
   }, 100);
 

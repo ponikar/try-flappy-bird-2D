@@ -7,6 +7,7 @@ interface GameState {
     gamePaused: () => void;
     gameResumed: () => void;
     gameStarted: () => void;
+    gameRestarted: () => void;
   };
 }
 
@@ -20,6 +21,7 @@ const useGameStore = create<GameState>((set) => ({
       setTimeout(() => set({ state: "running" }), 1);
     },
     gameStarted: () => set({ state: "running" }),
+    gameRestarted: () => set({ state: "ideal" }),
   },
 }));
 

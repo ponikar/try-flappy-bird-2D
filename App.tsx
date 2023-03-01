@@ -10,8 +10,9 @@ import { Pause, PauseButtonArea } from "./src/components/pause-button";
 import { Score } from "./src/components/score";
 import { useGameStateEffect } from "./src/hooks/useGameStateEffect";
 import { useBird, useBirdActions } from "./src/store/bird";
-import { useGameState } from "./src/store/game-state";
+import { useGameActions, useGameState } from "./src/store/game-state";
 
+const BIRD_FALLING_SPEED = 300;
 export default function App() {
   const { keepFalling, jump } = useBirdActions();
 
@@ -19,7 +20,8 @@ export default function App() {
 
   const state = useGameState();
 
-  const timer = useGameStateEffect(keepFalling, 700);
+  const timer = useGameStateEffect(keepFalling, BIRD_FALLING_SPEED);
+  const gameActions = useGameActions();
 
   useEffect(() => {
     return () => {
@@ -29,7 +31,11 @@ export default function App() {
   }, []);
 
   const handlePress = () => {
-    if (state === "paused" || state === "game-over") return;
+    if (state === "paused") return;
+
+    if (state === "game-over") {
+      return gameActions.gameRestarted();
+    }
 
     clearTimeout(timeout.current);
     clearInterval(timer.current);
@@ -38,7 +44,7 @@ export default function App() {
     timeout.current = setTimeout(() => {
       timer.current = setInterval(() => {
         keepFalling();
-      }, 700);
+      }, BIRD_FALLING_SPEED);
     }, 200);
   };
   return (

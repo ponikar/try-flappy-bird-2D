@@ -1,6 +1,7 @@
 import { Image, useImage } from "@shopify/react-native-skia";
 import React, { FC, useEffect, useRef, useState } from "react";
-import { useBird } from "../store/bird";
+import { useGameOverEffect } from "../hooks/useGameOverEffect";
+import { useBird, useBirdActions } from "../store/bird";
 
 interface BirdProps {}
 
@@ -13,6 +14,10 @@ export const Bird: FC<BirdProps> = () => {
   const [birdState, setBirdState] = useState<"ideal" | "goingup" | "goingdown">(
     "ideal"
   );
+
+  const { resetBird } = useBirdActions();
+
+  useGameOverEffect(resetBird);
 
   const posYRef = useRef(0);
 

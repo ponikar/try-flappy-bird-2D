@@ -1,5 +1,6 @@
 import { Image, SkImage, useImage } from "@shopify/react-native-skia";
 import React from "react";
+import { useGameOverEffect } from "../hooks/useGameOverEffect";
 import { useGameStateEffect } from "../hooks/useGameStateEffect";
 
 const useDigits = (digit: number) => {
@@ -37,6 +38,14 @@ export const Score = () => {
   const digitsImage = useDigits(currentScore);
 
   useGameStateEffect(() => setCurrentScore((oldScore) => oldScore + 20));
+
+  useGameOverEffect(() => {
+    setCurrentScore((score) => {
+      // store the score somewhere
+
+      return 0;
+    });
+  });
 
   return (
     <>

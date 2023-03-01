@@ -10,16 +10,19 @@ interface Bird {
   actions: {
     jump: () => void;
     keepFalling: () => void;
+    resetBird: () => void;
   };
 }
 
+const BIRD_INITIAL_STATE: Bird["state"] = {
+  y: 0,
+  x: 150,
+  width: 50,
+  height: 50,
+};
+
 const useBirdStore = create<Bird>((set) => ({
-  state: {
-    y: 0,
-    x: 150,
-    width: 50,
-    height: 50,
-  },
+  state: BIRD_INITIAL_STATE,
   actions: {
     jump: () =>
       set((data) => {
@@ -30,6 +33,7 @@ const useBirdStore = create<Bird>((set) => ({
       set((data) => {
         return { ...data, state: { ...data.state, y: data.state.y + 40 } };
       }),
+    resetBird: () => set({ state: BIRD_INITIAL_STATE }),
   },
 }));
 
