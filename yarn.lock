@@ -3047,6 +3047,11 @@ expo-asset@~8.7.0:
     path-browserify "^1.0.0"
     url-parse "^1.5.9"
 
+expo-av@~13.0.3:
+  version "13.0.3"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-13.0.3.tgz#b624757f3c4f8c35ca83d0485bb20b79b2f9e13d"
+  integrity sha512-9SpXOjY2MUK+jCIL68EUro/aHBlbZ3B4cY1nRr2aTPfv/dLD3bXRZNTTtSwOgsHbuKO6XwjHgCoYbd9T0GcE4A==
+
 expo-constants@~14.0.0, expo-constants@~14.0.2:
   version "14.0.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-14.0.2.tgz#2cb1dec8f41a64c2fc5b4eecaf77d7661cad01cc"

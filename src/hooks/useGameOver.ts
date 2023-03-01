@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { Dimensions } from "react-native";
+import { playSound } from "../helpers/sound";
 import { useBird } from "../store/bird";
 import { useGameActions } from "../store/game-state";
 
@@ -49,9 +51,17 @@ export const useGameOver = (pipe: Object) => {
   const { gameOver } = useGameActions();
   const isGameOver = checkCollision(bird, pipe);
 
+  const isSoundPlayed = useRef(false);
+
   const isTouchingGround = bird.y >= height;
 
   if (isGameOver || isTouchingGround) {
+    if (!isSoundPlayed.current) {
+      playSound(require("../assets/audio/hit.wav"));
+      setTimeout(() => playSound(require("../assets/audio/die.wav")), 1000);
+      isSoundPlayed.current = true;
+    }
+
     gameOver();
   }
 };

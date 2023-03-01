@@ -2,6 +2,7 @@
   "dependencies": {
     "@shopify/react-native-skia": "0.1.157",
     "expo": "^47.0.0",
+    "expo-av": "~13.0.3",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
