@@ -6,6 +6,8 @@ import { useGameOverEffect } from "../hooks/useGameOverEffect";
 import { useGameStateEffect } from "../hooks/useGameStateEffect";
 import { useGameActions } from "../store/game-state";
 
+const currentObstacleXPosition: Record<number, number> = {};
+
 const MAX_HEIGHT = 400;
 const MIN_HEIGHT = 300;
 
@@ -27,13 +29,21 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 export const Obstacles = () => {
   const [obstacles, setObstacles] = React.useState<Obstacle[]>([]);
 
+  const removingObstacle = React.useRef(false);
   const generateObstacles = () => {
+    if (removingObstacle.current) {
+      console.log("CAN'T GENERATE OBSTACLES WHILE REMOVING ONE");
+      return;
+    }
+
+    console.log("ADDING OBSTACLE");
+
     setObstacles((o) => {
       const height = Math.random() * (MAX_HEIGHT - MIN_HEIGHT) + MIN_HEIGHT;
       return [
         ...o,
         {
-          id: new Date().getMilliseconds(),
+          id: new Date().getTime(),
           y: Math.floor(Math.random() * 2) === 1 ? 0 : screenHeight - height,
           x: screenWidth + 150,
           width: Math.random() * (MAX_WIDTH - MIN_WIDTH) + MIN_WIDTH,
@@ -43,13 +53,31 @@ export const Obstacles = () => {
       ];
     });
   };
-  useGameStateEffect(generateObstacles, 2000);
+  useGameStateEffect(generateObstacles, 1500);
+
+  console.log("SO FAR LENGTH", obstacles.length);
+
+  useGameStateEffect(() => {
+    console.log("REMOVING OBSTACLE");
+    removingObstacle.current = true;
+    setObstacles((o) => {
+      const updatedObs = o.map((obstacle) => {
+        if (currentObstacleXPosition[obstacle.id] <= -obstacle.width) {
+          return null;
+        }
+        return { ...obstacle, x: currentObstacleXPosition[obstacle.id] };
+      });
+      return updatedObs.filter((obstacle) => obstacle !== null);
+    });
+
+    setTimeout(() => (removingObstacle.current = false), 500);
+  }, 6000);
   useGameOverEffect(() => setObstacles([]));
 
   return (
     <>
-      {obstacles.map((o, index) => (
-        <Obstacle object={o} key={index} />
+      {obstacles.map((o) => (
+        <Obstacle object={o} key={o.id} />
       ))}
     </>
   );
@@ -73,7 +101,10 @@ const Obstacle: FC<{
 
   useGameStateEffect(() => {
     if (!isUnMounted.current) {
-      setX((x) => x - 10);
+      setX((x) => {
+        currentObstacleXPosition[object.id] = x - 10;
+        return x - 10;
+      });
     }
   }, 100);
 
