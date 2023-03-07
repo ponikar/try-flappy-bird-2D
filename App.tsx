@@ -9,9 +9,18 @@ import { Obstacles } from "./src/components/obstacles";
 import { Pause, PauseButtonArea } from "./src/components/pause-button";
 import { Score } from "./src/components/score";
 import { useGameStateEffect } from "./src/hooks/useGameStateEffect";
-import { useBird, useBirdActions } from "./src/store/bird";
+import { useBirdActions } from "./src/store/bird";
 import { useGameActions, useGameState } from "./src/store/game-state";
+import { SENTRY_DSN } from "@env";
+import * as Sentry from "sentry-expo";
 
+if (!__DEV__) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    enableInExpoDevelopment: true,
+    debug: true,
+  });
+}
 const BIRD_FALLING_SPEED = 300;
 export default function App() {
   const { keepFalling, jump } = useBirdActions();
